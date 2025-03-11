@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>1773587526036901890<radar_device_info>radar.xml<id>1773587526036901890</id>
+        <create_by>admin</create_by>
+        <create_time>2023-11-01 20:53:44</create_time>
+        <update_by>test</update_by>
+        <update_time>2023-11-08 00:48:31</update_time>
+        <sys_org_code>A02</sys_org_code>
+        <name>设备二</name>
+        <serial_number>000002</serial_number>
+        <soft_version_number>1.0.3</soft_version_number>
+        <hard_version_number>1.0.1</hard_version_number>
+        <factory_date>2023-11-01 00:00:00</factory_date>
+        <hand_code>0000000002</hand_code>
+        <ip_address>10.42.0.1</ip_address>
+        <rate>1</rate>
+    </radar_device_info>
+    <radar_alarm_info>radar.xml<id>1720659778782662658</id>
+        <create_by>admin</create_by>
+        <create_time>2023-11-01 20:53:44</create_time>
+        <update_by>test</update_by>
+        <update_time>2023-11-08 00:48:31</update_time>
+        <sys_org_code>A02</sys_org_code>
+        <device_id>1773587526036901890</device_id>
+        <detection_range>5</detection_range>
+        <clustering_threshold>0.08</clustering_threshold>
+        <max_count>5000</max_count>
+        <min_count>30</min_count>
+        <total_time>0.8</total_time>
+        <two_detection_range>3</two_detection_range>
+    </radar_alarm_info>
+</Root>
