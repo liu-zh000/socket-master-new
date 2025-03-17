@@ -12,7 +12,7 @@
 
 #include "StorageRecord.h"
 
-#define WORK_PATH "/home/jetson/ZLMediaKit/release/linux/Debug/www/live/stream"
+#define WORK_PATH "/home/hhu/socket-master-new/1"
 
 using namespace std;
 
@@ -217,7 +217,7 @@ void AppConn::cmd_ask_info(Frame &frame)
         case 4://信道
                            // std::cout << "get channel command*********************************************** " <<std::endl;
                                 // 执行 get.sh 并获取输出
-                            fp_channel = popen("/home/jetson/radar/socket-server-master/code/app/get_channel.sh", "r");
+                            fp_channel = popen("/home/hhu/socket-master-new/1", "r");
                             if (fp_channel == NULL) {
                                 perror("popen failed");
                                 //return 1;
@@ -317,93 +317,100 @@ void AppConn::cmd_set_info(Frame &frame)
     auto logger = (LogManager::instance()).getLogger();       
     int t = std::stoi(frame.paras_[0]);
     std::string a = frame.paras_[0];
-    std::string b;
-    if(t  == 0 ){
-        alarmInfo_->detection_range  =std::stod(frame.paras_[2]);
-        config_->setAlarm_double_info(RAI_DETECTION_RANGE,std::stod(frame.paras_[2]));
-
-        alarmInfo_->two_detection_range  =std::stod(frame.paras_[1]);//lz1104
-        config_->setAlarm_double_info(RAI_TWO_DETECTION_RANGE,std::stod(frame.paras_[1]));//lz1104
-
-        //std::cout << "//lz two_warn_dis is (and) :"<<std::stod(frame.paras_[1])<<std::stod(frame.paras_[2])<<std::endl;
-        Message distence_msg;
-        distence_msg.index =1;
-        distence_msg.type_ = MSG_SERVER_RTSP_UPDATE;
-        char *buf = distence_msg.msg_text;
-        sprintf(buf,"%.1lf %.1lf",std::stod(frame.paras_[1]),std::stod(frame.paras_[2]));
-        //std::cout << "//lz distence_msg chack out :"<<distence_msg.msg_text<<std::endl;
-        if(!(communicate_->sendMessage(distence_msg)))
-        {
-            std::cout << "send distence to algorithm wrong !" << std::endl;
-        }
-        else{
-            std::cout << "send distence to algorithm success! is:" << distence_msg.msg_text <<std::endl;
-        }
-
+    std::string b = "1";
+    if(t  == 0 )
+    {
          b = "0";
     }
-    else if(t  == 1)//调试参数
+    else if(t  == 1)//"START SLAM!
     {
-        b = "1";
+        char command[256];
+        snprintf(command, sizeof(command), "/home/hhu/start/run.sh");
+        int result = system(command);
+        if (result == -1)
+        {
+            std::cout << "EXC FAILED !command :" << command << std::endl;
+            b = "1";
+        }
+        else
+        {
+            b = "0";
+        }
         std::cout << "START SLAM!" << std::endl;
     }
-    else if (t == 2)//视频映射调整0922
+    else if (t == 2)//SAVE COLOR_MAP AND STOP
     { 
-        // Message mode_msg;
-        // mode_msg.index =1;
-        // mode_msg.type_ = APP_SET_SHOW_MODE;
-        // char *buf = mode_msg.msg_text;
-        // sprintf(buf,"%d",std::stoi(frame.paras_[1]));
-        // if(!(communicate_->sendMessage(mode_msg)))
-        // {
-        //     std::cout << "send distence to algorithm wrong !" << std::endl;
-        // }
-        // else{
-        //     std::cout << "send distence to algorithm success! is:" << mode_msg.msg_text <<std::endl;
-        // }
-        // /* code */
+        char command1[256];
+        snprintf(command1, sizeof(command1), "/home/hhu/start/save.sh");
+        int result1 = system(command1);
+        if (result1 == -1)
+        {
+            std::cout << "EXC FAILED !command1 :" << command1 << std::endl;
+            b = "1";
+        }
+        else
+        {
+            b = "0";
+        }
         std::cout << "SAVE COLOR_MAP!" << std::endl;
-        b = "0";
-    }
-    else if (t == 3)//信道设置1010//lz1104
-    {
-    //     //int channel_now    = std::stoi(channle_buffer);//lz1104
-    //     int channel_to_set = std::stoi(frame.paras_[1]);
-    //     // std::cout << channel_now<<":now getedd buffer_string(now  channle befor set): " << channle_buffer << std::endl;
-    //      std::cout << channel_to_set<<": set  channle as : " << frame.paras_[1] << std::endl;
-    //     //if(channel_now == channel_to_set)
-    //     //{
-    //     //    b = "0";
-    //     //    std::cout << " because equl ,so skip set channle: "  << std::endl;
-    //     //}
-    //     //else
-    //    // {
-    //         // 执行 set.sh 并输入参数
-    //         char command[256];
-    //         // 构建命令字符串
 
-    //         if(channel_to_set == 99)
-    //         {
-    //             snprintf(command, sizeof(command), "/home/jetson/radar/socket-server-master/code/app/set_bg_channel.sh auto");//lz1104
-    //         }
-    //         else
-    //         {
-    //             snprintf(command, sizeof(command), "/home/jetson/radar/socket-server-master/code/app/set_bg_channel.sh %s", frame.paras_[1].c_str());
-    //         }
-            
-    //         int result = system(command);
-    //         if (result == -1)
-    //         {
-    //             std::cout << "set failed !" << std::endl;
-    //             b = "1";
-    //         }
-    //         else
-    //         {
-    //             b = "0";
-    //         }
-    //    // }
-   std::cout << "SAVE NO_COLOR_MAP!" << std::endl;
-        b = "0";
+        char command[256];
+        snprintf(command, sizeof(command), "/home/hhu/start/kill.sh");
+        int result = system(command);
+        if (result == -1)
+        {
+            std::cout << "EXC FAILED !command :" << command << std::endl;
+            b = "1";
+        }
+        else
+        {
+            b = "0";
+        }
+        std::cout << "KILL!" << std::endl;
+
+    }
+    else if (t == 3)//SAVE NO_COLOR_MAP
+    {
+
+        //int cmd_ = std::stoi(frame.paras_[1]);
+        // 执行
+        char command_1[256];
+        // 构建命令字符串
+        snprintf(command_1, sizeof(command_1), "/home/hhu/start/save-no-color.sh");
+
+        // if(channel_to_set == 99)
+        // {
+        //     snprintf(command_1, sizeof(command_1), "/home/jetson/radar/socket-server-master/code/app/set_bg_channel.sh auto");//lz1104
+        // }
+        // else  int result = system(command_1);
+        // {
+        //     snprintf(command_1, sizeof(command_1), "/home/jetson/radar/socket-server-master/code/app/set_bg_channel.sh %s", frame.paras_[1].c_str());
+        // }
+        int result_1 = system(command_1);
+        if (result_1 == -1)
+        {
+            std::cout << "EXC FAILED !command_1 :" << command_1 << std::endl;
+            b = "1";
+        }
+        else
+        {
+            b = "0";
+        }
+       std::cout << "SAVE NO_COLOR_MAP!" << std::endl;
+        char command[256];
+        // 构建命令字符串
+        snprintf(command, sizeof(command), "/home/hhu/start/kill.sh");
+        int result = system(command);
+        if (result == -1)
+        {
+            std::cout << "EXC FAILED !command :" << command << std::endl;
+            b = "1";
+        }
+        else
+        {
+            b = "0";
+        }
+        std::cout << "KILL!" << std::endl;
     }
     
     std::vector<string> paras; 
