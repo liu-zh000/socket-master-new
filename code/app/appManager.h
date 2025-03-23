@@ -35,9 +35,9 @@ public:
         std::string pathRecord = "/usr/local/WarningRecordDir";
         last_time_ = std::time(nullptr);
         //mv_ = new MonitorVedio(pathVedio, pathRecord);
-        communicate_ = new communicateObjct(QUEUE_NAME_1, QUEUE_NAME_2);
-        logger->info("soft verson:{}", deviceInfo_->soft_version_number);
-        logger->info("hard verson:{}", deviceInfo_->hard_version_number);
+        //communicate_ = new communicateObjct(QUEUE_NAME_1, QUEUE_NAME_2);
+        //logger->info("soft verson:{}", deviceInfo_->soft_version_number);
+        //logger->info("hard verson:{}", deviceInfo_->hard_version_number);
     }
 
     std::string mysql_last_time = "2023-11-08 00:48:33";
@@ -101,9 +101,9 @@ public:
         if(deviceInfo_){
             delete deviceInfo_;
         }
-        if(communicate_){
-            delete communicate_;
-        }
+        //if(communicate_){
+         //   delete communicate_;
+        //}
         if(config_){
             delete config_;
         }
@@ -123,12 +123,12 @@ public:
 
     void getMsg(Message &msg){
         auto logger = (LogManager::instance()).getLogger();
-        if(communicate_->receiveMessage(msg)){
-            logger->info("recv msg:{}", msg.msg_text);
-        }
-        else{
-            msg.type_ = -1;
-        }
+        //if(communicate_->receiveMessage(msg)){
+        //    logger->info("recv msg:{}", msg.msg_text);
+        //}
+        //else{
+        //    msg.type_ = -1;
+        //}
     }
     int process(int fd){
         //Message msg;
@@ -144,7 +144,7 @@ public:
             logger->warn("Clients is full!");
             return -1;
         }
-        users_[fd].init(fd, addr, alarmInfo_, deviceInfo_, config_,  communicate_);//bat_,
+        users_[fd].init(fd, addr, alarmInfo_, deviceInfo_, config_);//bat_,,  communicate_
         logger->info("Client:{}({}:{}) quit, UserCount:{}", fd, users_[fd].GetIP(), users_[fd].GetPort(), userCount);
         return 0;
     }
@@ -160,7 +160,7 @@ public:
         //mv_->monitor();
         Message msg;
         msg.type_ = -1;
-        getMsg(msg);
+        //getMsg(msg);
         
         if(msg.type_ == MSG_RTSP_SERVER_WARN){
             //mv_->recv_warning(cur);
@@ -194,7 +194,7 @@ private:
     
     createProxy factory_;
     configProxy *config_ = nullptr;
-    communicateObjct *communicate_;
+    //communicateObjct *communicate_;
     //BatDevice *bat_ = nullptr; // 电池电量检测类
     //MonitorVedio *mv_ = nullptr;
 };

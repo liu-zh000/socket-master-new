@@ -25,8 +25,7 @@ public:
 
     ~AppConn();
 
-    void init(int sockFd, const sockaddr_in& addr, RadarAlarmInfo *alarmInfo, RadarDeviceInfo *deviceInfo, configProxy *config,
-     communicateObjct *communicate);//BatDevice *bat ,
+    void init(int sockFd, const sockaddr_in& addr, RadarAlarmInfo *alarmInfo, RadarDeviceInfo *deviceInfo, configProxy *config);//BatDevice *bat ,communicateObjct *communicate
 
     void SendCmd(char* arr, int len);
 
@@ -69,7 +68,7 @@ private:
     struct  sockaddr_in addr_;
     bool isClose_;
 
-    communicateObjct *communicate_;
+    //communicateObjct *communicate_;
     
     CBuffer readBuff_; // 读缓冲区
     CBuffer writeBuff_; // 写缓冲区

@@ -33,7 +33,8 @@ AppConn::~AppConn() {
 
 };
 
-void AppConn::init(int fd, const sockaddr_in& addr, RadarAlarmInfo *alarmInfo, RadarDeviceInfo *deviceInfo, configProxy *config, communicateObjct *communicate) {
+void AppConn::init(int fd, const sockaddr_in& addr, RadarAlarmInfo *alarmInfo, 
+    RadarDeviceInfo *deviceInfo, configProxy *config) {///, communicateObjct *communicate
 //BatDevice *bat,
     assert(fd > 0);
     addr_ = addr;
@@ -43,7 +44,7 @@ void AppConn::init(int fd, const sockaddr_in& addr, RadarAlarmInfo *alarmInfo, R
     deviceInfo_ = deviceInfo;
     config_ = config;
     //bat_ = bat;     // 电池电量检测类
-    communicate_ = communicate;//lz
+    //communicate_ = communicate;//lz
 }
 
 void AppConn::SendCmd(char* arr, int len)
