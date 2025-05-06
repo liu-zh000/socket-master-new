@@ -24,11 +24,11 @@ public:
         deviceInfo_ = new RadarDeviceInfo();
         alarmInfo_ = new RadarAlarmInfo();
         config_->getMachineInfo(*deviceInfo_);
-        deviceInfo_->printInfo();
+        //deviceInfo_->printInfo();
         std::string id1 = deviceInfo_->id;//lz20240704
         config_->set_id(id1);//lz20240704
         config_->getAlarmInfo(*alarmInfo_);
-        alarmInfo_->printInfo();
+        //alarmInfo_->printInfo();
         //bat_ = new BatDevice(); // new了一个电池电量检测类
         
         std::string pathVedio = "/srv/ftp/record/live/stream";
@@ -41,72 +41,25 @@ public:
     }
 
     std::string mysql_last_time = "2023-11-08 00:48:33";
-    //std::string mysql_last_time = alarmInfo_->update_time;//lz1104
-    // void checkDbUpdate()//lz
-    // {
-    //     std::cout << "in checkDbUpdate!" << std::endl;
-    //     //if(sleep(1))
-    //     //{
-    //         auto logger = (LogManager::instance()).getLogger();
-    //         config_->getAlarmInfo(*alarmInfo_);
-    //         alarmInfo_->printInfo();
-    //         //std::string mysql_last_time = "2023-11-08 00:48:33";
-    //         std::string mysql_now_time = alarmInfo_->update_time;
-    //         logger->info("update_time:{}", mysql_now_time);
-    //         logger->info("update_time_last:{}", mysql_last_time);
-    //         if(mysql_now_time == mysql_last_time)
-    //         {
-    //             return;
-    //         }
-    //         else 
-    //         {
-                
-    //             double a = alarmInfo_->detection_range;
-    //             double b = alarmInfo_->clustering_threshold;
-    //             int c = alarmInfo_->max_count;
-    //             int d = alarmInfo_->min_count;
-    //             double e = alarmInfo_->total_time;
-    //             double f = alarmInfo_->two_detection_range;
-    //             logger->info("detection_range:{}", a);//检测距离
-    //             logger->info("clustering_threshold:{}", b);//聚类阈值
-    //             logger->info("max_count:{}", c);//点云最大数目
-    //             logger->info("min_count:{}", d);//点云最小数目
-    //             logger->info("total_time:{}", e);//累计时间
-    //             logger->info("two_detection_range:{}", f);//
-    //             Message sql_msg;
-    //             sql_msg.index   = 1;
-    //             sql_msg.type_   = MSG_WEB_PARA_UPDATE;
-    //             char *buf = sql_msg.msg_text;
-    //             sprintf(buf,"%.1lf %.2lf %d %d %.1lf ",a ,b ,c ,d ,e);    
-    //             if(!(communicate_->sendMessage(sql_msg)))
-    //             {
-    //                 std::cout << "web send  wrong !" << std::endl;
-    //             }
-    //             else
-    //                 {std::cout << "web send  success! is: " << sql_msg.msg_text <<std::endl; }
-
-    //             mysql_last_time =  mysql_now_time   ;
-
-    //         }
-    //     //}
-    // }
 
     ~appManager(){
+        std::cout << "in  ~appManager()" <<std::endl;
         if(config_){
             delete config_;
+            std::cout << "in  ~appManager() delete config_;" <<std::endl;
         }
         if(alarmInfo_){
-            delete alarmInfo_;
+            delete alarmInfo_;std::cout << "in  ~appManager() delete alarmInfo_" <<std::endl;
         }
         if(deviceInfo_){
-            delete deviceInfo_;
+            delete deviceInfo_;std::cout << "in  ~appManager() delete deviceInfo_" <<std::endl;
         }
         //if(communicate_){
          //   delete communicate_;
         //}
-        if(config_){
-            delete config_;
-        }
+        //if(config_){
+        //    delete config_;
+        //}
         // if(bat_){       // 析构电池电量检测类
         //     delete(bat_);
         // }
@@ -122,7 +75,7 @@ public:
     }
 
     void getMsg(Message &msg){
-        auto logger = (LogManager::instance()).getLogger();
+        //auto logger = (LogManager::instance()).getLogger();
         //if(communicate_->receiveMessage(msg)){
         //    logger->info("recv msg:{}", msg.msg_text);
         //}

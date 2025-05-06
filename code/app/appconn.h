@@ -62,8 +62,10 @@ public:
     void cmd_set_time(Frame &frame);
     void cmd_state(Frame &frame);
     int setTime(int recvTime);
+    
 private:
-   
+    int Toget_capacity();
+    float Toget_voltage();
     int fd_;
     struct  sockaddr_in addr_;
     bool isClose_;

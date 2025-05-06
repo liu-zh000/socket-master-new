@@ -12,7 +12,8 @@
 
 #include "StorageRecord.h"
 
-#define WORK_PATH "/home/hhu/socket-master-new/1"
+//#define WORK_PATH "/home/hhu/socket-master-new/1"
+#define WORK_PATH "/home/lz/LZ"
 
 using namespace std;
 
@@ -426,81 +427,96 @@ void AppConn::cmd_set_info(Frame &frame)
     SendCmd(arr, len);
 
 }
+int AppConn::Toget_capacity()
+{
+    StorageRecord x(WORK_PATH);
+    int state = 0;
+    int fy = x.getStorageMB(WORK_PATH, FREE_TYPE);
+    int ut = x.getStorageMB(WORK_PATH, USED_TYPE);
+    printf("free:%dMB, used:%dMB", fy, ut);
+    int saa = static_cast<int>(std::round(static_cast<float>(ut) /static_cast<float>( fy + ut) * 100));
+    return saa;
+}
+// float AppConn::Toget_voltage()
+// {
+//     //logger->info("bat_detect:{}V ", bat_->getVrevised());
+//     float bat_val_num = bat_->getVrevised();
+//     static int read_count = 0;
+//     static vector<double> sum_bat_num;
+//     sum_bat_num.push_back(bat_val_num);
+//     read_count++;
+//     if(read_count>=10)
+//     {
+//         double sum_bat = 0;
+//         for(double num : sum_bat_num)
+//         {
+//             sum_bat+=num;
+//         }
+//         bat_val_num = sum_bat/10;
+//         sum_bat_num.erase(sum_bat_num.begin());
+//     }
+//     else
+//     {
+//         bat_val_num = sum_bat_num.front();
+//     }
 
- void AppConn::cmd_state(Frame &frame)
- {
+//     static float min_bat_val_num = 1000.0;
+//     min_bat_val_num = (min_bat_val_num > bat_val_num)? bat_val_num : min_bat_val_num;//tem_bat_val_num取最小值
+//     bat_val_num = min_bat_val_num;
+
+//     if (bat_val_num >= 16.4)//电池电压满电范围16.8-16.4，高于16.4默认100%
+//     {
+//         bat_val_num = 16.4;
+//     }
+//     else if(bat_val_num <= 12.8)
+//     {
+//         bat_val_num = 12.8;
+//     }
+    
+//     int bat_val;
+//     if(bat_val_num > 15.52)
+//     {
+//         bat_val = (int)(75 + ((bat_val_num - 15.52) / (16.4 - 15.52) * 25));
+//     }
+//     else if(bat_val_num > 14.64)
+//     {
+//         bat_val = (int)(50 + ((bat_val_num - 14.64) / (15.52 - 14.64) * 25));
+//     }
+//     else if(bat_val_num > 13.60)
+//     {
+//         bat_val = (int)(25 + ((bat_val_num - 13.60) / (14.64 - 13.60) * 25));
+//     }
+//     else
+//     {
+//         bat_val =         (int)((bat_val_num - 12.8) / (13.60 - 12.8) * 25);
+//     }
+    
+//     std::string bat_cal = std::to_string(bat_val);
+//     if (bat_cal.length() >= 3) {
+// 		bat_cal = bat_cal.substr(0, 3);
+// 	}
+// 	else if(bat_cal.length() == 2)
+// 		bat_cal = "0" + bat_cal;
+//     else 
+// 		bat_cal = "00" + bat_cal;
+// }
+
+void AppConn::cmd_state(Frame &frame)
+{
     auto logger = (LogManager::instance()).getLogger();
     std::vector<string> paras;
+    std::string a = "0";
 
-    // StorageRecord x(WORK_PATH);
-    // int state = 0;
-    // int fy = x.getStorageMB(WORK_PATH, FREE_TYPE);
-    // int ut = x.getStorageMB(WORK_PATH, USED_TYPE);
-    // //printf("free:%dMB, used:%dMB", fy, ut);
-    // int saa = static_cast<int>(std::round(static_cast<float>(ut) /static_cast<float>( fy + ut) * 100));
-    // std::string sa = std::to_string(saa);
-    // if (sa.length() >= 3) {
-	// 	sa = sa.substr(0, 3);
-	// }
-	// else
-	// 	sa = "0" + sa;
-    // //("sa:{} ", sa);
+    int now_cap = Toget_capacity();
+    std::string sa = std::to_string(now_cap);
+    if (sa.length() >= 3) {
+		sa = sa.substr(0, 3);
+	}
+	else
+		sa = "0" + sa;
 
-    // //logger->info("bat_detect:{}V ", bat_->getVrevised());
-    // float bat_val_num = bat_->getVrevised();
-
-    // //LWR function:qupingjun
-    // static int read_count = 0;
-    // static vector<double> sum_bat_num;
-    // sum_bat_num.push_back(bat_val_num);
-    // read_count++;
-    // if(read_count>=10)
-    // {
-    //     double sum_bat = 0;
-    //     for(double num : sum_bat_num)
-    //     {
-    //         sum_bat+=num;
-    //     }
-    //     bat_val_num = sum_bat/10;
-    //     sum_bat_num.erase(sum_bat_num.begin());
-    // }
-    // else
-    // {
-    //     bat_val_num = sum_bat_num.front();
-    // }
-
-    // static float min_bat_val_num = 1000.0;
-    // min_bat_val_num = (min_bat_val_num > bat_val_num)? bat_val_num : min_bat_val_num;//tem_bat_val_num取最小值
-    // bat_val_num = min_bat_val_num;
-
-    // if (bat_val_num >= 16.4)//电池电压满电范围16.8-16.4，高于16.4默认100%
-    // {
-    //     bat_val_num = 16.4;
-    // }
-    // else if(bat_val_num <= 12.8)
-    // {
-    //     bat_val_num = 12.8;
-    // }
-    
-    // int bat_val;
-    // if(bat_val_num > 15.52)
-    // {
-    //     bat_val = (int)(75 + ((bat_val_num - 15.52) / (16.4 - 15.52) * 25));
-    // }
-    // else if(bat_val_num > 14.64)
-    // {
-    //     bat_val = (int)(50 + ((bat_val_num - 14.64) / (15.52 - 14.64) * 25));
-    // }
-    // else if(bat_val_num > 13.60)
-    // {
-    //     bat_val = (int)(25 + ((bat_val_num - 13.60) / (14.64 - 13.60) * 25));
-    // }
-    // else
-    // {
-    //     bat_val =         (int)((bat_val_num - 12.8) / (13.60 - 12.8) * 25);
-    // }
-    
-    // std::string bat_cal = std::to_string(bat_val);
+    // float now_val = Toget_voltage();
+    // std::string bat_cal = std::to_string(now_val);
     // if (bat_cal.length() >= 3) {
 	// 	bat_cal = bat_cal.substr(0, 3);
 	// }
@@ -509,17 +525,14 @@ void AppConn::cmd_set_info(Frame &frame)
     // else 
 	// 	bat_cal = "00" + bat_cal;
 
-    // //logger->info("bat_cal:{} ", bat_cal);
 
-    std::string a = "0";
-    // // std::string co = "050";
-    // //std::string sa = "060";
+    
+    
     // paras.push_back(a);
     // paras.push_back(bat_cal);//电池电量
-    // paras.push_back(sa);//储存容量
     paras.push_back(a);
-    paras.push_back("050");//电池电量
-    paras.push_back("050");//储存容量 
+    paras.push_back("098");//电池电量
+    paras.push_back(sa);//储存容量
     Frame nfame;
     char arr[FRAME_MAX_LEN];
     int len = nfame.make(arr, NANO_ID, APP_ID, TYPE_ACK, CMD_ASK_STATE, paras);

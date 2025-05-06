@@ -46,9 +46,11 @@ SocketServer::~SocketServer() {
     logger->info("socket exit");
     close(listenFd_);
     if(aManager_){
+        logger->info("delete aManager_;");
         delete aManager_;
     }
     isClose_ = true;
+    logger->info("delete aManager_ after;");
 }
 
 void SocketServer::InitEventMode_(int trigMode) {
@@ -56,17 +58,17 @@ void SocketServer::InitEventMode_(int trigMode) {
     connEvent_ = EPOLLONESHOT | EPOLLRDHUP;
     switch (trigMode)
     {
-    case 0:
-        break;
-    case 1:
-        connEvent_ |= EPOLLET;
-        break;
-    case 2:
-        listenEvent_ |= EPOLLET;
-        break;
+    //case 0:
+    //    break;
+    //case 1:
+    //    connEvent_ |= EPOLLET;
+    //    break;
+    //case 2:
+    //    listenEvent_ |= EPOLLET;
+    //    break;
     case 3:
-        listenEvent_ |= EPOLLET;
-        connEvent_ |= EPOLLET;
+        listenEvent_ |= EPOLLET; // 监听事件使用 ET 模式
+        connEvent_ |= EPOLLET;// 连接事件使用 ET 模式
         break;
     default:
         listenEvent_ |= EPOLLET;
@@ -82,7 +84,7 @@ void SocketServer::Start() {
     if(!isClose_) {
         logger->info("========== Server start ==========");
      }
-    while(!isClose_) {
+    while(!isClose_) {//「事件驱动」+「异步批处理」
 
         int eventCnt = epoller_->Wait(timeMS);
         for(int i = 0; i < eventCnt; i++) {
@@ -105,7 +107,7 @@ void SocketServer::Start() {
                 logger->error("Unexpected event");
             }
         }
-        DealMsg_();
+        //DealMsg_();
         DealWrite_();
   
     }
@@ -176,7 +178,7 @@ void SocketServer::DealWrite_(void) {
         if(aManager_->needWrite(fd)){
             int ret = aManager_->write_(fd, &writeErrno);
             if(ret < 0 && writeErrno != EAGAIN) {
-                printf("write error:%d in %d line\n", writeErrno ,__LINE__);//lz 20240406
+                printf("write error:%d in %d line\n", writeErrno ,__LINE__);
                 CloseConn_(fd);
             }
         }
