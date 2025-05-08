@@ -16,8 +16,7 @@ class SocketServer {
 public:
     SocketServer(
         int port, int trigMode, int timeoutMS, bool OptLinger, 
-        int sqlPort, const char* sqlUser, const  char* sqlPwd, 
-        const char* dbName, int connPoolNum, int threadNum,
+        int connPoolNum, int threadNum,
         bool openLog, int logLevel, int logQueSize);
 
     ~SocketServer();
@@ -28,7 +27,7 @@ private:
     void AddClient_(int fd, sockaddr_in addr);
   
     void DealListen_();
-    void DealMsg_(void);
+
     void DealWrite_(void);
     void DealRead_(int fd);
 

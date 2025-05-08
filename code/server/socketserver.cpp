@@ -18,8 +18,8 @@ using namespace std;
 
 SocketServer::SocketServer(
             int port, int trigMode, int timeoutMS, bool OptLinger,
-            int sqlPort, const char* sqlUser, const  char* sqlPwd,
-            const char* dbName, int connPoolNum, int threadNum,
+            //int sqlPort, const char* sqlUser, const  char* sqlPwd,const char* dbName, 
+            int connPoolNum, int threadNum,
             bool openLog, int logLevel, int logQueSize):
             port_(port), openLinger_(OptLinger), timeoutMS_(timeoutMS), isClose_(false),
             epoller_(new Epoller())
@@ -107,7 +107,6 @@ void SocketServer::Start() {
                 logger->error("Unexpected event");
             }
         }
-        //DealMsg_();
         DealWrite_();
   
     }
@@ -165,12 +164,7 @@ void SocketServer::DealRead_(int fd) {
     aManager_->process(fd);
     epoller_->ModFd(fd, connEvent_ | EPOLLIN);
 }
-void SocketServer::DealMsg_(void){
-    //for (auto it = fdSet_.begin(); it != fdSet_.end(); ++it) {
-        //int fd = *it;
-        aManager_->msgProcess(fdSet_);
-    //}    
-}
+
 void SocketServer::DealWrite_(void) {
     int writeErrno = 0;
     for (auto it = fdSet_.begin(); it != fdSet_.end(); ++it) {

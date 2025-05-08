@@ -34,16 +34,13 @@ AppConn::~AppConn() {
 
 };
 
-void AppConn::init(int fd, const sockaddr_in& addr, RadarAlarmInfo *alarmInfo, 
-    RadarDeviceInfo *deviceInfo, configProxy *config) {///, communicateObjct *communicate
+void AppConn::init(int fd, const sockaddr_in& addr) {///, communicateObjct *communicate
 //BatDevice *bat,
     assert(fd > 0);
     addr_ = addr;
     fd_ = fd;
     isClose_ = false;
-    alarmInfo_ = alarmInfo;
-    deviceInfo_ = deviceInfo;
-    config_ = config;
+   
     //bat_ = bat;     // 电池电量检测类
     //communicate_ = communicate;//lz
 }
@@ -132,18 +129,7 @@ int AppConn::getFrameFromBuffer(Frame &frame, char* bytes, int len)
     }
     return discard;
 }
-void AppConn::msgProcess(Message &msg)
-{
-    switch (msg.type_)
-    {
-    case MSG_RTSP_SERVER_WARN:
-        warn(msg.msg_text);
-        break;
-    
-    default:
-        break;
-    }
-}
+
 bool AppConn::process(void) {
     auto logger = (LogManager::instance()).getLogger();
     //msgProcess(msg);
@@ -195,26 +181,21 @@ void AppConn::cmd_ask_info(Frame &frame)
     std::string version;
     switch(infoType){
         case CMD_ASK_INFO_PARA1_3_DISTANCE:
+        
+            paras.push_back("0");
             
-            dis_two = std::to_string(alarmInfo_->two_detection_range);//lz1104
-            dis_two = dis_two.substr(0, 3);//lz1104
-            paras.push_back(dis_two);//lz1104
-            dis =  std::to_string(alarmInfo_->detection_range);
-            dis = dis.substr(0, 3);
-            paras.push_back(dis);
-            //std::cout<<"alarmInfo_->two_detection_range:"<<alarmInfo_->two_detection_range<<" and "<<dis_two<<"  alarmInfo_->detection_range:"<<dis<<std::endl;
         break;
         case CMD_ASK_INFO_PARA1_0_SOFT:
-            version = deviceInfo_->soft_version_number;
-            paras.push_back(version);
+            
+            paras.push_back("0");
         break;
         case CMD_ASK_INFO_PARA1_1_HARDWARE:
-            version = deviceInfo_->hard_version_number;
-            paras.push_back(version);
+
+            paras.push_back("0");
         break; 
         case CMD_ASK_INFO_PARA1_2_SERNUM:
-            version = deviceInfo_->serial_number;
-            paras.push_back(version);
+            
+            paras.push_back("0");
         break; 
         case 4://信道
                            // std::cout << "get channel command*********************************************** " <<std::endl;
@@ -373,21 +354,10 @@ void AppConn::cmd_set_info(Frame &frame)
     }
     else if (t == 3)//SAVE NO_COLOR_MAP
     {
-
-        //int cmd_ = std::stoi(frame.paras_[1]);
-        // 执行
         char command_1[256];
         // 构建命令字符串
         snprintf(command_1, sizeof(command_1), "/home/hhu/start/save-no-color.sh");
 
-        // if(channel_to_set == 99)
-        // {
-        //     snprintf(command_1, sizeof(command_1), "/home/jetson/radar/socket-server-master/code/app/set_bg_channel.sh auto");//lz1104
-        // }
-        // else  int result = system(command_1);
-        // {
-        //     snprintf(command_1, sizeof(command_1), "/home/jetson/radar/socket-server-master/code/app/set_bg_channel.sh %s", frame.paras_[1].c_str());
-        // }
         int result_1 = system(command_1);
         if (result_1 == -1)
         {
@@ -414,7 +384,23 @@ void AppConn::cmd_set_info(Frame &frame)
         }
         std::cout << "KILL!" << std::endl;
     }
-    
+    else if (t == 4)//关机
+    {
+        char command[128];
+        snprintf(command, sizeof(command), "/home/hhu/start/poweroff.sh");
+        int result = system("command");
+        if (result == -1)
+        {
+            std::cerr << "EXC poweroff FAILED !command_1 :" << std::endl;
+            b = "1";
+        }
+        else
+        {
+            b = "0";
+        }
+       //std::cout << "poweroff" << std::endl;
+       
+    }
     std::vector<string> paras; 
     paras.push_back(a);
     paras.push_back(b); 

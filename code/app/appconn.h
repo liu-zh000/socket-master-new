@@ -15,9 +15,8 @@
 
 #include "../buffer/CBuffer.h"
 #include "Frame.h"
-#include "../config/machineInfo.h"
-#include "../../process/deviceipc.h"
-#include "../config/configProxy.h"
+
+
 //#include "BatDevice.h"
 class AppConn {
 public:
@@ -25,7 +24,7 @@ public:
 
     ~AppConn();
 
-    void init(int sockFd, const sockaddr_in& addr, RadarAlarmInfo *alarmInfo, RadarDeviceInfo *deviceInfo, configProxy *config);//BatDevice *bat ,communicateObjct *communicate
+    void init(int sockFd, const sockaddr_in& addr);//BatDevice *bat ,communicateObjct *communicate
 
     void SendCmd(char* arr, int len);
 
@@ -49,7 +48,7 @@ public:
     }
 
     bool process(void);
-    void msgProcess(Message &msg);
+    //void msgProcess(Message &msg);
 
     int getFrameFromBuffer(Frame &frame, char* bytes, int len);
     void frameProcess(Frame &frame);
@@ -70,14 +69,12 @@ private:
     struct  sockaddr_in addr_;
     bool isClose_;
 
-    //communicateObjct *communicate_;
+
     
     CBuffer readBuff_; // 读缓冲区
     CBuffer writeBuff_; // 写缓冲区
     uint32_t m_ticks = 0;
-    RadarAlarmInfo *alarmInfo_;
-    RadarDeviceInfo *deviceInfo_;
-    configProxy *config_ = nullptr;
+   
     //BatDevice *bat_;    // 电池电量检测类
 
 };
